@@ -1,0 +1,145 @@
+CREATE TABLE message_entity_text_url(
+    id INT PRIMARY KEY,
+	offset_ INT,
+    length_ INT,
+    url TEXT
+);
+
+-- Таблица для хранения информации о канале
+CREATE TABLE peer_channel (
+    id BIGINT PRIMARY KEY,
+    channel_id BIGINT
+);
+
+CREATE TABLE message_replies(
+    id BIGINT PRIMARY KEY,
+    replies INT,
+    replies_pts INT,
+    comments_ BOOLEAN,
+    channel_id BIGINT,
+    max_id BIGINT,
+    read_max_id BIGINT
+);
+
+-- Таблица для хранения информации о медиа
+
+
+CREATE TABLE sizes(
+    id INT PRIMARY KEY,
+    type varchar(1),
+    bytes INT[]
+);
+
+-- Таблица для хранения размеров фото с прогрессивной загрузкой
+
+
+-- Таблица для хранения информации о клавиатуре
+CREATE TABLE reply_markup (
+    id INT PRIMARY KEY,
+    reply_id BIGINT
+);
+
+CREATE TABLE photo (
+	photo_id INT PRIMARY KEY,
+	message_id INT,
+    id BIGINT,
+    access_hash BIGINT,
+    file_reference BYTEA,
+    sizes_id INT REFERENCES sizes(id),
+    date TIMESTAMP WITH TIME ZONE,
+    dc_id INT,
+	type VARCHAR(1),
+    w INT,
+    h INT,
+    sizes BIGINT[],
+	replies INT,
+    replies_pts INT,
+    comments_ BOOLEAN,
+    channel_id BIGINT,
+    max_id BIGINT,
+    read_max_id BIGINT,
+    size BIGINT
+);
+
+
+
+-- Таблица для хранения информации о голосовавших за каждый вариант ответа
+
+
+CREATE TABLE poll (
+	poll_id INT PRIMARY KEY,
+    message_id INT,
+    id BIGINT,
+    question TEXT,
+    closed BOOLEAN,
+    public_voters BOOLEAN,
+    multiple_choice BOOLEAN,
+    quiz BOOLEAN,
+    close_period INT,
+    close_date TIMESTAMP WITH TIME ZONE,
+	min_ BOOLEAN,
+    total_voters INT,
+    solution TEXT,
+	option INT[],
+    voters BIGINT,
+    chosen BOOLEAN,
+    correct BOOLEAN,
+	text TEXT,
+    option_ INT[]
+);
+
+
+
+CREATE TABLE document_(
+	document_id INT PRIMARY KEY, 
+    message_id INT,
+    id BIGINT,
+    access_hash BIGINT,
+    file_reference BYTEA,
+    date TIMESTAMP WITH TIME ZONE,
+    mime_type varchar(20),
+    size BIGINT,
+    dc_id INT,
+	duration INT,
+    w INT,
+    h INT,
+    round_message BOOLEAN,
+    supports_streaming BOOLEAN
+);
+
+
+CREATE TABLE message (
+    id BIGINT PRIMARY KEY,
+    date TIMESTAMP WITH TIME ZONE,
+    message TEXT,
+    out BOOLEAN,
+    mentioned BOOLEAN,
+    media_unread BOOLEAN,
+    silent BOOLEAN,
+    post BOOLEAN,
+    from_scheduled BOOLEAN,
+    legacy BOOLEAN,
+    edit_hide BOOLEAN,
+    pinned BOOLEAN,
+    noforwards BOOLEAN,
+    edit_date TIMESTAMP WITH TIME ZONE,
+    entities_id INT REFERENCES message_entity_text_url(id),
+    views BIGINT,
+    forwards BIGINT,
+	nopremium BOOLEAN,
+    spoiler BOOLEAN,
+    photo_id INT REFERENCES photo(photo_id),
+    document_id INT REFERENCES document_(document_id),
+    poll_id INT REFERENCES poll(poll_id),
+    has_stickers BOOLEAN,
+    ttl_seconds INT,
+    replies_id INT REFERENCES message_replies(id),
+    post_author BIGINT,
+    grouped_id BIGINT,
+    peer_id_id BIGINT REFERENCES peer_channel(id),
+    reply_to_id BIGINT REFERENCES message(id),
+    from_id BIGINT, 
+    fwd_from_id BIGINT REFERENCES message(id),
+    via_bot_id BIGINT,
+    reply_markup_id BIGINT REFERENCES reply_markup(id)
+)
